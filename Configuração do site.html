@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sistema de Iluminação Inteligente</title>
+
+    <style>
+
+        :root {
+            --navy: #000520;
+            --header: #e8eef5;
+            --placeholder: #d9d9d9;
+            --white: #ffffff;
+            --black: #000000;
+
+            --green: #22c55e;
+            --blue: #38bdf8;
+
+            --font: Inter, Arial, Helvetica, sans-serif;
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            background: var(--navy);
+
+            color: var(--white);
+
+            font-family: var(--font);
+
+        }
+
+
+        /* =====================================================
+           DASHBOARD
+        ===================================================== */
+
+        .dashboard {
+
+            min-height: 100vh;
+
+            overflow-x: hidden;
+
+            background: var(--navy);
+
+        }
+
+
+        /* =====================================================
+           CABEÇALHO
+        ===================================================== */
+
+        .topbar {
+
+            min-height: 178px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 43px;
+
+            padding: 20px 28px;
+
+            background: var(--header);
+
+            color: var(--black);
+
+        }
+
+
+        .brand {
+
+            width: 330px;
+
+            max-height: 140px;
+
+            object-fit: contain;
+
+            object-position: center;
+
+        }
+
+
+        .project-title {
+
+            font-size: 40px;
+
+            font-weight: 700;
+
+            line-height: 1.2;
+
+        }
+
+
+        .project-title p {
+
+            margin: 0;
+
+        }
+
+
+        .project-title p + p {
+
+            margin-top: 8px;
+
+        }
+
+
+        /* =====================================================
+           TÍTULO PRINCIPAL
+        ===================================================== */
+
+        h1 {
+
+            margin: 11px 20px 0;
+
+            text-align: center;
+
+            font-size: 40px;
+
+            font-weight: 700;
+
+            line-height: 48px;
+
+        }
+
+
+        /* =====================================================
+           CARDS
+        ===================================================== */
+
+        .control-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(4, 200px);
+
+            justify-content: center;
+
+            gap: 88px;
+
+            margin-top: 48px;
+
+        }
+
+
+        .panel h2 {
+
+            margin: 0 0 11px;
+
+            text-align: center;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            line-height: 18px;
+
+        }
+
+
+        .panel-content {
+
+            width: 200px;
+
+            height: 200px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: var(--placeholder);
+
+            color: var(--black);
+
+        }
+
+
+        .valor {
+
+            font-size: 38px;
+
+            font-weight: 700;
+
+            line-height: 1.1;
+
+        }
+
+
+        .unidade {
+
+            margin-top: 8px;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+        }
+
+
+        .subvalor {
+
+            margin-top: 8px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+        }
+
+
+        /* =====================================================
+           STATUS
+        ===================================================== */
+
+        .status-online {
+
+            color: #15803d;
+
+        }
+
+
+        .status-offline {
+
+            color: #b91c1c;
+
+        }
+
+
+        .status-ponto {
+
+            font-size: 34px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        /* =====================================================
+           GRÁFICO
+        ===================================================== */
+
+        .chart-panel {
+
+            margin: 49px 42px 0;
+
+        }
+
+
+        .chart-panel h2 {
+
+            margin: 0 0 11px 40px;
+
+            text-align: left;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            line-height: 18px;
+
+        }
+
+
+        .chart-content {
+
+            height: 320px;
+
+            padding: 10px;
+
+            background: var(--placeholder);
+
+        }
+
+
+        .chart-area {
+
+            width: 100%;
+
+            height: 100%;
+
+            background: var(--navy);
+
+        }
+
+
+        canvas {
+
+            width: 100%;
+
+            height: 100%;
+
+            display: block;
+
+        }
+
+
+        /* =====================================================
+           LEGENDA
+        ===================================================== */
+
+        .legenda {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 35px;
+
+            margin-top: 15px;
+
+            font-size: 14px;
+
+            color: var(--white);
+
+        }
+
+
+        .item-legenda {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+        }
+
+
+        .ponto-legenda {
+
+            width: 11px;
+
+            height: 11px;
+
+            border-radius: 50%;
+
+            display: inline-block;
+
+        }
+
+
+        .verde {
+
+            background: var(--green);
+
+        }
+
+
+        .azul {
+
+            background: var(--blue);
+
+        }
+
+
+        /* =====================================================
+           RODAPÉ
+        ===================================================== */
+
+        footer {
+
+            margin: 31px 28px 42px;
+
+            font-size: 20px;
+
+            font-weight: 700;
+
+            line-height: 24px;
+
+        }
+
+
+        /* =====================================================
+           TABLET
+        ===================================================== */
+
+        @media (max-width: 1100px) {
+
+            .control-grid {
+
+                grid-template-columns: repeat(2, 200px);
+
+                gap: 40px 70px;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           CELULAR
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            .topbar {
+
+                min-height: 126px;
+
+                display: block;
+
+                padding: 8px 0;
+
+                text-align: center;
+
+            }
+
+
+            .brand {
+
+                width: 180px;
+
+                height: 55px;
+
+                object-fit: contain;
+
+            }
+
+
+            .project-title {
+
+                margin-top: 7px;
+
+                font-size: 15px;
+
+                line-height: 18px;
+
+            }
+
+
+            .project-title p + p {
+
+                margin-top: 10px;
+
+            }
+
+
+            h1 {
+
+                display: none;
+
+            }
+
+
+            .control-grid {
+
+                display: block;
+
+                margin: 35px 0 0;
+
+            }
+
+
+            .panel {
+
+                margin-bottom: 34px;
+
+            }
+
+
+            .panel h2 {
+
+                margin-bottom: 10px;
+
+            }
+
+
+            .panel-content {
+
+                width: 263px;
+
+                height: 149px;
+
+                margin: 0 auto;
+
+            }
+
+
+            .valor {
+
+                font-size: 34px;
+
+            }
+
+
+            .chart-panel {
+
+                margin: 0 12px;
+
+            }
+
+
+            .chart-panel h2 {
+
+                margin: 0 0 38px;
+
+                text-align: center;
+
+            }
+
+
+            .chart-content {
+
+                height: 149px;
+
+                padding: 6px;
+
+            }
+
+
+            .legenda {
+
+                flex-direction: column;
+
+                align-items: center;
+
+                gap: 10px;
+
+            }
+
+
+            footer {
+
+                margin: 91px 12px 20px;
+
+                max-width: 251px;
+
+                font-size: 10px;
+
+                line-height: 15px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<main class="dashboard">
+
+
+    <!-- =====================================================
+         CABEÇALHO
+    ====================================================== -->
+
+    <header class="topbar">
+
+        <img
+            class="brand"
+            src="{{ url_for('static', filename='img/sao-judas.png') }}"
+            alt="São Judas Universidade"
+        >
+
+
+        <div class="project-title">
+
+            <p>PROJETO A3 - UC SISTEMAS DE CONTROLE</p>
+
+            <p>DINÂMICO E MODERNO</p>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         TÍTULO
+    ====================================================== -->
+
+    <h1>
+        SISTEMA DE ILUMINAÇÃO INTELIGENTE
+    </h1>
+
+
+    <!-- =====================================================
+         INDICADORES
+    ====================================================== -->
+
+    <section
+        class="control-grid"
+        aria-label="Indicadores do sistema"
+    >
+
+
+        <!-- LUMINOSIDADE -->
+
+        <article class="panel">
+
+            <h2>
+                LUMINOSIDADE
+            </h2>
+
+            <div class="panel-content">
+
+                <div
+                    class="valor"
+                    id="sensor"
+                >
+                    ---
+                </div>
+
+                <div
+                    class="unidade"
+                    id="unidadeSensor"
+                >
+                    ADC
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <!-- ILUMINAÇÃO -->
+
+        <article class="panel">
+
+            <h2>
+                ILUMINAÇÃO
+            </h2>
+
+            <div class="panel-content">
+
+                <div class="valor">
+
+                    <span id="luz">
+                        ---
+                    </span>
+
+                    %
+
+                </div>
+
+                <div class="unidade">
+                    Necessidade
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <!-- PWM -->
+
+        <article class="panel">
+
+            <h2>
+                PWM
+            </h2>
+
+            <div class="panel-content">
+
+                <div
+                    class="valor"
+                    id="pwm"
+                >
+                    ---
+                </div>
+
+                <div class="unidade">
+                    0 – 255
+                </div>
+
+                <div
+                    class="subvalor"
+                    id="pwmPercentual"
+                >
+                    --- %
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <!-- STATUS -->
+
+        <article class="panel">
+
+            <h2>
+                STATUS
+            </h2>
+
+            <div
+                class="panel-content"
+                id="statusBox"
+            >
+
+                <div
+                    class="status-ponto status-online"
+                    id="statusPonto"
+                >
+                    ●
+                </div>
+
+                <div
+                    class="valor status-online"
+                    id="status"
+                >
+                    CONECTANDO...
+                </div>
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- =====================================================
+         GRÁFICO
+    ====================================================== -->
+
+    <section class="chart-panel">
+
+        <h2>
+            GRÁFICO EM TEMPO REAL
+        </h2>
+
+
+        <div class="chart-content">
+
+            <div class="chart-area">
+
+                <canvas
+                    id="graficoCanvas"
+                ></canvas>
+
+            </div>
+
+        </div>
+
+
+        <div class="legenda">
+
+            <div class="item-legenda">
+
+                <span
+                    class="ponto-legenda verde"
+                ></span>
+
+                Necessidade de iluminação
+
+            </div>
+
+
+            <div class="item-legenda">
+
+                <span
+                    class="ponto-legenda azul"
+                ></span>
+
+                PWM normalizado
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RODAPÉ
+    ====================================================== -->
+
+    <footer>
+
+        DESENVOLVIDO POR ESTUDANTES DA TURMA DO
+        PROFESSOR WAGNER MARQUES ROSSINI
+
+    </footer>
+
+
+</main>
+
+
+<script>
+
+
+/* ============================================================
+   HISTÓRICO
+============================================================ */
+
+const historicoLuz = [];
+
+const historicoPWM = [];
+
+const maxPontos = 60;
+
+
+/* ============================================================
+   CANVAS
+============================================================ */
+
+const canvas =
+    document.getElementById("graficoCanvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+
+/* ============================================================
+   ATUALIZA OS DADOS
+============================================================ */
+
+async function atualizarDados() {
+
+    try {
+
+        const resposta =
+            await fetch("/dados", {
+                cache: "no-store"
+            });
+
+
+        if (!resposta.ok) {
+
+            throw new Error(
+                "Falha ao obter dados"
+            );
+
+        }
+
+
+        const dados =
+            await resposta.json();
+
+
+        /* ====================================================
+           SENSOR
+        ==================================================== */
+
+        document.getElementById(
+            "sensor"
+        ).textContent =
+            dados.sensor;
+
+
+        /* ====================================================
+           ILUMINAÇÃO
+        ==================================================== */
+
+        document.getElementById(
+            "luz"
+        ).textContent =
+            Number(dados.luz).toFixed(1);
+
+
+        /* ====================================================
+           PWM
+        ==================================================== */
+
+        document.getElementById(
+            "pwm"
+        ).textContent =
+            dados.pwm;
+
+
+        const pwmPercentual =
+            (dados.pwm / 255) * 100;
+
+
+        document.getElementById(
+            "pwmPercentual"
+        ).textContent =
+            pwmPercentual.toFixed(1) + " %";
+
+
+        /* ====================================================
+           STATUS
+        ==================================================== */
+
+        const status =
+            document.getElementById("status");
+
+        const statusPonto =
+            document.getElementById("statusPonto");
+
+
+        status.textContent =
+            "ONLINE";
+
+
+        status.classList.remove(
+            "status-offline"
+        );
+
+
+        status.classList.add(
+            "status-online"
+        );
+
+
+        statusPonto.classList.remove(
+            "status-offline"
+        );
+
+
+        statusPonto.classList.add(
+            "status-online"
+        );
+
+
+        /* ====================================================
+           HISTÓRICO
+        ==================================================== */
+
+        historicoLuz.push(
+            Number(dados.luz)
+        );
+
+
+        historicoPWM.push(
+            pwmPercentual
+        );
+
+
+        if (
+            historicoLuz.length >
+            maxPontos
+        ) {
+
+            historicoLuz.shift();
+
+            historicoPWM.shift();
+
+        }
+
+
+        /* ====================================================
+           GRÁFICO
+        ==================================================== */
+
+        desenharGrafico();
+
+
+    }
+
+    catch (erro) {
+
+        console.error(erro);
+
+
+        document.getElementById(
+            "status"
+        ).textContent =
+            "SEM CONEXÃO";
+
+
+        document.getElementById(
+            "status"
+        ).classList.remove(
+            "status-online"
+        );
+
+
+        document.getElementById(
+            "status"
+        ).classList.add(
+            "status-offline"
+        );
+
+
+        document.getElementById(
+            "statusPonto"
+        ).classList.remove(
+            "status-online"
+        );
+
+
+        document.getElementById(
+            "statusPonto"
+        ).classList.add(
+            "status-offline"
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   DESENHA O GRÁFICO
+============================================================ */
+
+function desenharGrafico() {
+
+
+    const largura =
+        canvas.clientWidth;
+
+
+    const altura =
+        canvas.clientHeight;
+
+
+    if (
+        largura <= 0 ||
+        altura <= 0
+    ) {
+
+        return;
+
+    }
+
+
+    const dpr =
+        window.devicePixelRatio || 1;
+
+
+    canvas.width =
+        largura * dpr;
+
+
+    canvas.height =
+        altura * dpr;
+
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+
+    ctx.clearRect(
+        0,
+        0,
+        largura,
+        altura
+    );
+
+
+    /* ========================================================
+       GRADE
+    ======================================================== */
+
+    ctx.strokeStyle =
+        "#293548";
+
+    ctx.lineWidth = 1;
+
+
+    ctx.fillStyle =
+        "#94a3b8";
+
+
+    ctx.font =
+        "12px Arial";
+
+
+    for (
+        let i = 0;
+        i <= 4;
+        i++
+    ) {
+
+        const y =
+            altura -
+            (i / 4) * altura;
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            y
+        );
+
+        ctx.lineTo(
+            largura,
+            y
+        );
+
+        ctx.stroke();
+
+
+        ctx.fillText(
+            (i * 25) + "%",
+            8,
+            Math.max(
+                12,
+                y - 5
+            )
+        );
+
+    }
+
+
+    /* ========================================================
+       FUNÇÃO DE LINHA
+    ======================================================== */
+
+    function desenharLinha(
+        valores,
+        cor
+    ) {
+
+        if (
+            valores.length < 2
+        ) {
+
+            return;
+
+        }
+
+
+        ctx.beginPath();
+
+
+        valores.forEach(
+            (valor, indice) => {
+
+
+                const x =
+                    valores.length === 1
+                    ? 0
+                    : (
+                        indice /
+                        (maxPontos - 1)
+                    ) * largura;
+
+
+                const y =
+                    altura -
+                    (valor / 100) *
+                    altura;
+
+
+                if (
+                    indice === 0
+                ) {
+
+                    ctx.moveTo(
+                        x,
+                        y
+                    );
+
+                }
+
+                else {
+
+                    ctx.lineTo(
+                        x,
+                        y
+                    );
+
+                }
+
+            }
+        );
+
+
+        ctx.strokeStyle =
+            cor;
+
+        ctx.lineWidth = 3;
+
+        ctx.lineJoin =
+            "round";
+
+        ctx.lineCap =
+            "round";
+
+        ctx.stroke();
+
+
+        /* ====================================================
+           PONTOS
+        ==================================================== */
+
+        valores.forEach(
+            (valor, indice) => {
+
+
+                const x =
+                    (
+                        indice /
+                        (maxPontos - 1)
+                    ) * largura;
+
+
+                const y =
+                    altura -
+                    (valor / 100) *
+                    altura;
+
+
+                ctx.beginPath();
+
+
+                ctx.arc(
+                    x,
+                    y,
+                    3,
+                    0,
+                    Math.PI * 2
+                );
+
+
+                ctx.fillStyle =
+                    cor;
+
+
+                ctx.fill();
+
+            }
+        );
+
+    }
+
+
+    /* ========================================================
+       NECESSIDADE
+    ======================================================== */
+
+    desenharLinha(
+        historicoLuz,
+        "#22c55e"
+    );
+
+
+    /* ========================================================
+       PWM
+    ======================================================== */
+
+    desenharLinha(
+        historicoPWM,
+        "#38bdf8"
+    );
+
+}
+
+
+/* ============================================================
+   ATUALIZAÇÃO AUTOMÁTICA
+============================================================ */
+
+setInterval(
+    atualizarDados,
+    200
+);
+
+
+/* ============================================================
+   PRIMEIRA LEITURA
+============================================================ */
+
+atualizarDados();
+
+
+/* ============================================================
+   REDIMENSIONAMENTO
+============================================================ */
+
+window.addEventListener(
+    "resize",
+    desenharGrafico
+);
+
+</script>
+
+
+</body>
+
+</html>
