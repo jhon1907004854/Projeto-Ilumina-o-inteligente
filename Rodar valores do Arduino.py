@@ -1,93 +1,88 @@
+
 from flask import Flask, render_template, jsonify
 import serial
 import threading
-import re
 import time
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder="Templates",
+    static_folder="Static"
+)
 
-# =====================================================
-# CONEXÃO COM O ARDUINO
-# =====================================================
-
-arduino = serial.Serial("COM3", 9600, timeout=1)
-
-# Últimos valores recebidos
+# Dados recebidos do Arduino
 dados = {
-    "sensor": 0,
-    "luz": 0,
+    "sensor": 0.0,
+    "luz": 0.0,
     "pwm": 0
 }
 
+lock = threading.Lock()
 
-# =====================================================
-# LEITURA DA SERIAL
-# =====================================================
 
 def ler_arduino():
 
-    time.sleep(2)
-
     while True:
+        try:
+            with serial.Serial("COM3", 9600, timeout=1) as arduino:
 
-        linha = arduino.readline().decode(
-            "utf-8",
-            errors="ignore"
-        ).strip()
+                print("Arduino conectado na COM3")
+                time.sleep(2)
 
-        if linha:
+                while True:
 
-            print(linha)
+                    linha = arduino.readline().decode(
+                        "utf-8",
+                        errors="ignore"
+                    ).strip()
 
-            resultado = re.search(
-                r"LDR:\s*(\d+)\s*\|\s*Luz:\s*([\d.]+)%\s*\|\s*PWM:\s*(\d+)",
-                linha
-            )
+                    if not linha:
+                        continue
 
-            if resultado:
+                    try:
+                        lux_texto, pwm_texto = linha.split(",")
 
-                dados["sensor"] = int(resultado.group(1))
-                dados["luz"] = float(resultado.group(2))
-                dados["pwm"] = int(resultado.group(3))
+                        lux = float(lux_texto)
+                        pwm = int(pwm_texto)
 
+                        with lock:
+                            dados["sensor"] = lux
+                            dados["luz"] = lux
+                            dados["pwm"] = pwm
 
-# =====================================================
-# PÁGINA PRINCIPAL
-# =====================================================
+                        print(
+                            f"Recebido: Lux={lux:.1f} | PWM={pwm}"
+                        )
+
+                    except (ValueError, TypeError):
+                        print("Linha ignorada:", linha)
+
+        except serial.SerialException as erro:
+
+            print("Erro serial:", erro)
+            time.sleep(3)
+
 
 @app.route("/")
 def pagina_principal():
-
     return render_template("index.html")
 
-
-# =====================================================
-# API DOS DADOS
-# =====================================================
 
 @app.route("/dados")
 def enviar_dados():
 
-    return jsonify(dados)
+    with lock:
+        return jsonify(dados.copy())
 
-
-# =====================================================
-# INICIA LEITURA DO ARDUINO
-# =====================================================
-
-thread = threading.Thread(
-    target=ler_arduino,
-    daemon=True
-)
-
-thread.start()
-
-
-# =====================================================
-# EXECUTA O SERVIDOR
-# =====================================================
 
 if __name__ == "__main__":
+
+    thread = threading.Thread(
+        target=ler_arduino,
+        daemon=True
+    )
+
+    thread.start()
 
     app.run(
         host="127.0.0.1",
